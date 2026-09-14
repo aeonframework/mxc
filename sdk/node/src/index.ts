@@ -106,6 +106,7 @@ export {
   StateAwareContainmentBackend,
   StateAwareSchemaVersion,
   SandboxId,
+  IsolationSessionNetworkConfig,
   IsolationSessionProvisionConfig,
   IsolationSessionStartConfig,
   IsolationSessionExecConfig,
