@@ -970,7 +970,7 @@ fn main() {
     // (which probe doesn't need; deferring them shaves cold-start cost
     // off the SDK warm path).
     if cli.probe {
-        let policy = if let Some(decoded) = decoded_config.as_ref() {
+        let request = if let Some(decoded) = decoded_config.as_ref() {
             // Parse using the existing pipeline but route logger output to
             // an in-memory buffer that we discard — the probe must not
             // emit anything other than its JSON line on stdout.
@@ -980,7 +980,7 @@ fn main() {
                     json,
                     &mut probe_logger,
                 ) {
-                    Ok(MxcRequest::OneShot(request)) => request.policy,
+                    Ok(MxcRequest::OneShot(request)) => request,
                     Ok(MxcRequest::StateAware(_)) | Err(_) => {
                         eprintln!("Error: failed to load probe config");
                         eprint!("{}", probe_logger.get_buffer());
@@ -994,9 +994,9 @@ fn main() {
                 }
             }
         } else {
-            wxc_common::models::ContainerPolicy::default()
+            wxc_common::models::ExecutionRequest::default()
         };
-        let output = appcontainer_common::probe::run_probe(&policy);
+        let output = appcontainer_common::probe::run_probe(&request);
         // appcontainer_common has no dependency on the isolation-session
         // backend, so it reports `isolationSessionAvailable` as `false`. When
         // the backend is compiled in, override it with a read-only activation

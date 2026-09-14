@@ -123,20 +123,29 @@ if (!support.IsSupported)
 foreach (AvailableBackend backend in MxcSandbox.GetAvailableBackends())
 {
     Console.WriteLine($"{backend.Backend}: tier={backend.Tier}");
+    bool canUseDeniedPaths = backend.Capabilities.Contains(
+        BackendCapability.FilesystemDeniedPaths);
+    bool canAllowHostLoopback = backend.Capabilities.Contains(
+        BackendCapability.IngressHostLoopbackAllow);
+    Console.WriteLine(
+        $"  deniedPaths={canUseDeniedPaths}, hostLoopback.allow={canAllowHostLoopback}");
 }
 ```
 
 `GetPlatformSupport()` reports whether this public SDK can launch a sandbox and
 the backends it can launch. `GetAvailableBackends()` is broader: it reports
 every backend the host can run, including lifecycle-only backends such as
-Windows Sandbox. Its ProcessContainer `Tier` is the strongest tier the host can
-reach; policy can still select a weaker tier.
+Windows Sandbox and IsolationSession. Its ProcessContainer `Tier` is the
+strongest tier the host can reach; policy can still select a weaker tier.
 `Capabilities` reports optional host features such as
 `BackendCapability.CaptureDenials` and `BackendCapability.ProxyEnforcement`.
+`FilesystemDeniedPaths` covers native `filesystem.deniedPaths`.
+`IngressHostLoopbackAllow` covers
+`network.ingress.hostLoopback = "allow"`.
 `Warnings` carries diagnostics for a capability the host cannot offer — but not
 for every absent one: only checks that produce a reason contribute. Bubblewrap's
 `ProxyEnforcement` does (see below); Windows omits `CaptureDenials` without a
-warning.
+warning. Missing capabilities otherwise are unavailable or could not be detected.
 
 Discovery is advisory. Availability can change before launch, and a backend in
 `GetAvailableBackends()` is not necessarily one the one-shot SDK can launch.

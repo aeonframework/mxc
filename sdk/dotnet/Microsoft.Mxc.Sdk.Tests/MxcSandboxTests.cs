@@ -206,15 +206,16 @@ public class MxcSandboxTests
         Assert.Equal(expected, MxcSandbox.ParseIsolationTier(wireName));
     }
 
-    [Fact]
-    public void Discovery_MapsEveryNativeCapability()
+    [Theory]
+    [InlineData("captureDenials", BackendCapability.CaptureDenials)]
+    [InlineData("filesystemDeniedPaths", BackendCapability.FilesystemDeniedPaths)]
+    [InlineData("ingressHostLoopbackAllow", BackendCapability.IngressHostLoopbackAllow)]
+    [InlineData("proxyEnforcement", BackendCapability.ProxyEnforcement)]
+    public void Discovery_MapsEveryNativeCapability(
+        string wireName,
+        BackendCapability expected)
     {
-        Assert.Equal(
-            BackendCapability.CaptureDenials,
-            MxcSandbox.ParseBackendCapability("captureDenials"));
-        Assert.Equal(
-            BackendCapability.ProxyEnforcement,
-            MxcSandbox.ParseBackendCapability("proxyEnforcement"));
+        Assert.Equal(expected, MxcSandbox.ParseBackendCapability(wireName));
     }
 
     [Theory]
