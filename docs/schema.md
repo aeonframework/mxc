@@ -383,7 +383,7 @@ force a particular backend.
 
 | Value | Resolution |
 |-------|------------|
-| `"process"` | `processcontainer` on Windows, `lxc` on Linux, `seatbelt` on macOS |
+| `"process"` | `processcontainer` on Windows, `bubblewrap` on Linux, `seatbelt` on macOS |
 | `"vm"` | Full hardware-virtualised VM isolation. Resolves to `windows_sandbox` on Windows. |
 | `"microvm"` | MicroVM on Windows (NanVix via the Windows Hypervisor Platform). Experimental. |
 
@@ -394,12 +394,12 @@ force a particular backend.
 | `"processcontainer"` | (Default) Windows process-level isolation. Resolves to AppContainer (legacy) or BaseContainer (newer OS sandbox API) at run time depending on host capabilities and the `--experimental` flag. |
 | `"windows_sandbox"` | Windows Sandbox VM isolation. Dual-mode: a transient **one-shot** runner that launches a fresh disposable VM per execution, and a **state-aware** lifecycle backed by a long-lived per-sandbox daemon. |
 | `"wslc"` | Linux containers via the WSL Container SDK |
-| `"lxc"` | Native LXC container isolation |
+| `"lxc"` | Native LXC container isolation. No abstract intent resolves to LXC; request it explicitly. |
 | `"microvm"` | MicroVM isolation via Windows HyperV Platform (NanVix microkernel) |
 | `"hyperlight"` | MicroVM isolation via Hyperlight + Unikraft with an embedded CPython snapshot (experimental) |
 | `"isolation_session"` | Windows isolation session — runs the workload as a freshly-provisioned, per-execution isolated user account in its own OS-managed session (experimental). Dual-mode: one-shot and state-aware. |
 | `"seatbelt"` | macOS sandbox isolation (Seatbelt). Requires macOS 15 or later — see [`docs/seatbelt/seatbelt-backend.md`](seatbelt/seatbelt-backend.md). |
-| `"bubblewrap"` | Unprivileged Linux sandboxing via Bubblewrap/user namespaces (experimental) |
+| `"bubblewrap"` | Unprivileged Linux sandboxing via Bubblewrap/user namespaces. The Linux default — see [`docs/bwrap-support/bubblewrap-backend.md`](bwrap-support/bubblewrap-backend.md). |
 
 Only the backend section matching the selected `containment` value is accepted;
 a config that also carries an unrelated backend's section is **rejected** with a
